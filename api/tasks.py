@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen, Request
 from .models import Currency
 import itertools
-
+import http
 @shared_task
 # some heavy stuff here
 def create_currency():
@@ -16,10 +16,11 @@ def create_currency():
         html = e.partial
     soup = BeautifulSoup(html, 'html.parser')
     # get data for USD, EUR, JPY, GBP, AUD, CAD, CHF, CNH, SEK, NZD pair with INR
-    
     table = soup.find("tbody").find_all("tr")
+    # print(table)
     index = [160, 1493, 1529, 1551, 1646, 1760, 1900, 2020, 1985]
     currency = []
+
     for tr in table:
         if(tr.attrs["id"]=="pair_160"):
             currency.append(tr)
@@ -39,7 +40,7 @@ def create_currency():
             currency.append(tr)
         elif(tr.attrs["id"] == "pair_1985"):
             currency.append(tr)
-
+    
     for idx, cur in zip(index, currency):
         pair = cur.find("td", class_="plusIconTd").a.text
         bid = cur.find("td", class_=f"pid-{idx}-bid").text
@@ -62,9 +63,6 @@ def create_currency():
             time=time
         )
 
-        # sleep few seconds to avoid database block
-        sleep(5)
-
 
 @shared_task
 def update_currency():
@@ -74,6 +72,7 @@ def update_currency():
         html = urlopen(req).read()
     except (http.client.IncompleteRead) as e:
         html = e.partial
+
     soup = BeautifulSoup(html, 'html.parser')
     table = soup.find("tbody").find_all("tr")
     index = [160, 1493, 1529, 1551, 1646, 1760, 1900, 2020, 1985]
