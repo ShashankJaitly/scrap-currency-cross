@@ -5,8 +5,8 @@ from urllib.request import urlopen, Request
 from .models import Currency
 import itertools
 import http
+
 @shared_task
-# some heavy stuff here
 def create_currency():
     req = Request('https://www.investing.com/currencies/single-currency-crosses',
                   headers={'User-Agent': 'Mozilla/5.0'})
@@ -106,10 +106,10 @@ def update_currency():
         change = cur.find("td", class_=f"pid-{idx}-pc").text
         change_p = cur.find("td", class_=f"pid-{idx}-pc").text
         time = cur.find("td", class_=f"pid-{idx}-time").text
-        # create dictionary
+      
         data = {'pair': pair, 'bid': bid, 'ask': ask, 'high': high,
                 'low': low, 'change': change, 'change_p': change_p, 'time': time}
-        # find the object by filtering and update all fields
+   
         Currency.objects.filter(pair=pair).update(**data)
 
         sleep(5)
