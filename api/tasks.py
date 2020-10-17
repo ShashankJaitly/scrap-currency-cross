@@ -51,6 +51,7 @@ def create_currency():
         change_p = cur.find("td", class_=f"pid-{idx}-pc").text
         time = cur.find("td", class_=f"pid-{idx}-time").text
 
+        print(time)
         # create objects in database
         Currency.objects.create(
             pair=pair,

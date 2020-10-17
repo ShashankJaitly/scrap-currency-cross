@@ -8,7 +8,7 @@ class Currency(models.Model):
     low = models.FloatField()
     change = models.CharField(max_length=20)
     change_p = models.CharField(max_length=20)
-    time = models.TimeField()
+    time = models.CharField(max_length=10)
 
     class Meta:
         verbose_name = 'Currency'
